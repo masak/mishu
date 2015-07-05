@@ -10,9 +10,12 @@ role Mock::Performer {
         @!events.push($e);
     }
 
-    method is(@events, $description) {
-        if @events.elems != @!events.elems {
-            is @!events.elems, @events.elems, "$description -- same size of event lists";
+    method ok_got(@expected, $description) {
+        my @actual = @!events;
+        @!events = ();
+
+        if @expected.elems != @!events.elems {
+            is @actual.elems, @expected.elems, "$description -- same size of event lists";
             return;
 
             # XXX: instead of just failing things immediately,
@@ -20,7 +23,7 @@ role Mock::Performer {
             # fail with that diff
         }
 
-        for ^@events Z @events Z @!events -> ($i, $expected, $actual) {
+        for ^@expected Z @expected Z @actual -> ($i, $expected, $actual) {
             if $expected.WHAT !=== $actual.WHAT {
                 is $actual.^name, $expected.^name, "$description -- same type event at position $i";
                 return;

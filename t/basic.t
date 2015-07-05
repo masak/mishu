@@ -10,7 +10,7 @@ use Test::Mishu;
     $mishu.send:
         Command::Tell.new("OH HAI")
     ;
-    $performer.is: [
+    $performer.ok_got: [
         Event::Tell.new("OH HAI"),
     ], "asking to tell immediately fires off a response";
 }
@@ -22,7 +22,7 @@ use Test::Mishu;
     $mishu.send:
         Command::Tell.new("hehehe")
     ;
-    $performer.is: [
+    $performer.ok_got: [
         Event::Tell.new("hehehe"),
     ], "and it's actually the appropriate message";
 }
@@ -36,14 +36,14 @@ use Test::Mishu;
         Command::Wait.new(5, minutes,
             Command::Tell.new("delayed OH HAI"))
     ;
-    $performer.is: [], "asking for a delayed tell does nothing";
+    $performer.ok_got: [], "asking for a delayed tell does nothing";
 
     $mishu.update();
-    $performer.is: [], "updating too early does nothing";
+    $performer.ok_got: [], "updating too early does nothing";
 
     $time.wait(5, minutes);
     $mishu.update();
-    $performer.is: [
+    $performer.ok_got: [
         Event::Tell.new("delayed OH HAI"),
     ], "five minutes later, it shows up";
 }
@@ -60,11 +60,11 @@ use Test::Mishu;
 
     $time.wait(10, minutes);
     $mishu.update();
-    $performer.is: [], "updating too early does nothing";
+    $performer.ok_got: [], "updating too early does nothing";
 
     $time.wait(11, minutes);
     $mishu.update();
-    $performer.is: [
+    $performer.ok_got: [
         Event::Tell.new("delayed hehehehe"),
     ], "eleven minutes later, it shows up";
 }
@@ -81,15 +81,13 @@ use Test::Mishu;
 
     $time.wait(3, minutes);
     $mishu.update();
-    $performer.is: [
+    $performer.ok_got: [
         Event::Tell.new("fire once!"),
     ], "it shows up";
 
     $time.wait(2, minutes);
     $mishu.update();
-    $performer.is: [
-        Event::Tell.new("fire once!"),
-    ], "but it only shows up once";
+    $performer.ok_got: [], "but it only shows up once";
 }
 
 done;
